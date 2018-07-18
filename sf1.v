@@ -90,6 +90,38 @@ Proof. simpl. reflexivity. Qed.
 Example test_andb34: (andb3 true true false) = false.
 Proof. simpl. reflexivity. Qed.
 
+
+(* Compound Types *)
+
+Inductive rgb : Type :=
+  | red : rgb
+  | green : rgb
+  | blue : rgb.
+
+Inductive color : Type :=
+  | black : color
+  | white : color
+  | primary : rgb -> color.
+
+Definition monochrome (c : color) : bool :=
+  match c with
+  | black => true
+  | white => true
+  | primary p => false
+  end.
+
+Definition isred (c : color) : bool :=
+  match c with
+  | black => false
+  | white => false
+  | primary red => true
+  | primary _ => false
+  end.
+
+End Playground1.
+
+Module NatPlayground.
+
 Inductive nat : Type :=
   | O : nat
   | S : nat -> nat.
@@ -100,7 +132,8 @@ Definition pred (n:nat) : nat :=
   | S n' => n'
   end.
 
-End Playground1.
+End NatPlayground.
+
 
 (* Use built in nat type *)
 Fixpoint evenb (n:nat) : bool :=
@@ -152,7 +185,7 @@ Fixpoint exp (base power : nat) : nat :=
 Fixpoint factorial (n:nat) : nat :=
   match n with
   | O => S 0
-  | S n' => n * factorial (n')
+  | S n' => mult n (factorial n')
   end.
 
 Example test_factorial1: (factorial 3) = 6.
@@ -214,6 +247,8 @@ Proof. simpl. reflexivity. Qed.
 Example test_blt_nat3: (blt_nat 4 2) = false.
 Proof. simpl. reflexivity. Qed.
 
+(* Proof by Simplification *)
+
 Theorem plus_0_n : forall n : nat, 0 + n = n.
 Proof.
   intros n. simpl. reflexivity. Qed.
@@ -226,6 +261,8 @@ Proof. intros n. simpl. reflexivity. Qed.
 
 Theorem plus_n_0 : forall n, n = n + 0.
 Proof. intros n. simpl. Abort. (* Proven by induction in sf2.v *)
+
+(* Proof by Rewriting *)
 
 Theorem plus_id_example : forall n m : nat,
   n = m -> n + n = m + m.
@@ -263,6 +300,8 @@ Proof.
   rewrite -> H.
   reflexivity.
 Qed.
+
+(* Proof by Case Analysis *)
 
 Theorem plus_1_neq_0 : forall n : nat,
   beq_nat (n + 1) 0 = false.
