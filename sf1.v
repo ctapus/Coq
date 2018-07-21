@@ -364,7 +364,7 @@ Proof.
       - reflexivity. }
 Qed.
 
-Theorem plus_1_new_0' : forall n : nat,
+Theorem plus_1_neq_0' : forall n : nat,
   beq_nat (n + 1) 0 = false.
 Proof.
   intros [|n].
@@ -427,6 +427,28 @@ Proof.
   - rewrite H. rewrite H. reflexivity.
 Qed.
 
+Lemma andb_false_eq_false :
+  forall (b : bool), andb false b = false.
+Proof. reflexivity. Qed.
+
+Lemma orb_true_eq_true :
+  forall (b : bool), orb true b = true.
+Proof. reflexivity. Qed.
+
+Theorem andb_eq_orb :
+  forall (b c : bool),
+  (andb b c = orb b c) -> b = c.
+Proof.
+  intros b c H.
+  destruct b.
+  - rewrite orb_true_eq_true in H.
+    rewrite <-H.
+    reflexivity.
+  - rewrite andb_false_eq_false in H.
+    rewrite -> H.
+    reflexivity.
+Qed.
+
 Inductive bin : Type :=
   | O : bin
   | T : bin -> bin
@@ -449,5 +471,11 @@ Fixpoint bin_to_nat (n : bin) : nat :=
 Example test_bin_incr1 : bin_to_nat(incr O) = 1.
 Proof. simpl. reflexivity. Qed.
 Example test_bin_incr2 : bin_to_nat(TPO (incr O)) = 3.
+Proof. simpl. reflexivity. Qed.
+Example test_bin_incr3 : bin_to_nat(incr (incr O)) = 2.
+Proof. simpl. reflexivity. Qed.
+Example test_bin_incr4 : bin_to_nat(incr (T (TPO O))) = 3.
+Proof. simpl. reflexivity. Qed.
+Example test_bin_incr5 : bin_to_nat(incr (T (T (TPO O)))) = 5.
 Proof. simpl. reflexivity. Qed.
 
